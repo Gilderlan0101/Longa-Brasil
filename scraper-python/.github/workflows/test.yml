@@ -1,0 +1,12 @@
+# .github/workflows/test.yml
+name: Teste Simples
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Teste
+        run: echo "GitHub Actions está funcionando!"
