@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'scraper-python/**'  # Só roda quando alterar algo no scraper-python
+      - 'scraper-python/**'
   pull_request:
     branches: [ main, master ]
     paths:
@@ -16,7 +16,7 @@ jobs:
     
     defaults:
       run:
-        working-directory: ./scraper-python  # IMPORTANTE: Define o diretório de trabalho
+        working-directory: ./scraper-python
     
     steps:
     - uses: actions/checkout@v5
@@ -30,19 +30,20 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-      working-directory: ./scraper-python  
     
-    - name: Ensure browsers are installed
-      run: python -m playwright install --with-deps
-      working-directory: ./scraper-python
+    - name: Install Playwright browsers
+      run: |
+        python -m playwright install chromium
+        python -m playwright install-deps
     
-    - name: Run your tests
-      run: pytest src/test/ -v --tracing=retain-on-failure
-      working-directory: ./scraper-python
+    - name: Run tests
+      run: |
+        pytest src/test/ -v --tb=short
     
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-traces
-        path: longa-brasil/scraper-python/src/test
+        name: test-results
+        path: scraper-python/test-results/
+        retention-days: 30
